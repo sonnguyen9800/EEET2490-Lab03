@@ -148,7 +148,7 @@
 
 
 /* Function prototypes */
-void uart_init();
-void uart_sendc(unsigned char c);
-char uart_getc();
-void uart_puts(char *s);
+void uart0_init();
+void uart0_sendc(unsigned char c);
+char uart0_getc();
+void uart0_puts(char *s);

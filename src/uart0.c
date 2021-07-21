@@ -4,7 +4,7 @@
 /**
  * Set baud rate and characteristics (115200 8N1) and map to GPIO
  */
-void uart_init()
+void uart0_init()
 {
     register unsigned int r;
 
@@ -57,7 +57,7 @@ void uart_init()
 /**
  * Send a character
  */
-void uart_sendc(unsigned char c) {
+void uart0_sendc(unsigned char c) {
 
     /* Check Flags Register */
 	/* And wait until FIFO not full */
@@ -72,7 +72,7 @@ void uart_sendc(unsigned char c) {
 /**
  * Receive a character
  */
-char uart_getc() {
+char uart0_getc() {
     char c = 0;
 
     /* Check Flags Register */
@@ -94,7 +94,7 @@ char uart_getc() {
 /**
  * Display a string
  */
-void uart_puts(char *s) {
+void uart0_puts(char *s) {
     while (*s) {
         /* convert newline to carriage return + newline */
         if (*s == '\n')
