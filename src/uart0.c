@@ -39,8 +39,8 @@ void uart0_init()
 	/* Fraction part register = (Fractional part * 64) + 0.5 */
 	/* UART_CLOCK = 48MHz (old firmware it was 3MHz); Baud = 115200. */
 
-	*UART0_IBRD = 26;       // 115200 baud
-	*UART0_FBRD = 3;
+	*UART0_IBRD = 2;       // 115200 baud
+	*UART0_FBRD = 0xB;
 
 	/* Set up the Line Control Register */
 	/* Enable FIFO */

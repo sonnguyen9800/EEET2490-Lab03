@@ -10,7 +10,10 @@ void main()
  // echo everything back
  while(1) {
  //read each char
- char c = uart_getc();
+ char c = uart0_getc();
+ if (c == '\0'){
+	 continue;
+ }
  uart0_puts("You typed:");
  uart0_sendc(c);
  uart0_puts("\n");
