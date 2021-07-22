@@ -12,11 +12,11 @@ void uart0_init()
 	*UART0_CR = 0x0;
 
 	/* Setup GPIO pins 14 and 15 */
-
 	/* Set GPIO14 and GPIO15 to be pl011 TX/RX which is ALT0	*/
-	/*
-	 * YOUR CODE HERE
-	*/
+	 r = *GPFSEL1;
+	 r &= ~( (7 << 12)|(7 << 15) ); //Clear bits 12-17 (gpio14, gpio15)
+	 r |=  ( 4 << 12)|(4 << 15) ; //Set value 4 (select ALT5: UART1)
+	 *GPFSEL1 = r;
 
 
 	/* enable GPIO 14, 15 */
@@ -39,8 +39,8 @@ void uart0_init()
 	/* Fraction part register = (Fractional part * 64) + 0.5 */
 	/* UART_CLOCK = 48MHz (old firmware it was 3MHz); Baud = 115200. */
 
-	*UART0_IBRD = 2;       // 115200 baud
-	*UART0_FBRD = 0xB;
+	*UART0_IBRD = 26;       // 115200 baud
+	*UART0_FBRD = 3;
 
 	/* Set up the Line Control Register */
 	/* Enable FIFO */
@@ -59,14 +59,12 @@ void uart0_init()
  */
 void uart0_sendc(unsigned char c) {
 
-    /* Check Flags Register */
-	/* And wait until FIFO not full */
-	//YOUR CODE HERE
-
-	/* Write our data byte out to the data register */
-	/*
-	 * YOUR CODE HERE
-	*/
+	 do {
+	 asm volatile("nop");
+	 //uart0_puts("Full\n");
+	 } while (*UART0_FR & UART0_FR_TXFF ); // Wait until TX is not full (If full -> Keep looping)
+	 /* write the character to the buffer */
+	 *UART0_DR = c;
 }
 
 /**
@@ -77,15 +75,13 @@ char uart0_getc() {
 
     /* Check Flags Register */
 	/* Wait until Receive FIFO is not empty */
-
-	/*
-	 * YOUR CODE HERE
-	*/
+	 do {
+		 //uart0_puts("Full\n");
+		 asm volatile("nop");
+	 } while (*UART0_FR & UART0_FR_RXFE ); //IF EMPTY -> THIS LOOP KEEP LOOPING
 
     /* read it and return */
-    /*
-	 * YOUR CODE HERE
-	*/
+	 c = (unsigned char)(*UART0_DR);
 
     /* convert carriage return to newline */
     return (c == '\r' ? '\n' : c);
@@ -98,7 +94,7 @@ void uart0_puts(char *s) {
     while (*s) {
         /* convert newline to carriage return + newline */
         if (*s == '\n')
-            uart_sendc('\r');
-        uart_sendc(*s++);
+            uart0_sendc('\r');
+        uart0_sendc(*s++);
     }
 }
